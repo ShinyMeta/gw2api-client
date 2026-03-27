@@ -50,11 +50,16 @@ client.language('de').items().all()
 - [`api().account().dailycrafting()`](#apiaccountdailycrafting) - The completed daily crafting for the account.
 - [`api().account().dungeons()`](#apiaccountdungeons) - The completed dungeons of the current daily.
 - [`api().account().dyes()`](#apiaccountdyes) - The unlocked dyes of the account.
+- [`api().account().emotes()`](#apiaccountemotes) - The unlocked emotes of the account.
 - [`api().account().finishers()`](#apiaccountfinishers) - The unlocked finishers of the account.
 - [`api().account().gliders()`](#apiaccountgliders) - The unlocked gliders of the account.
 - [`api().account().home().cats()`](#apiaccounthomecats) - The unlocked cats in the home instance of the account.
 - [`api().account().home().nodes()`](#apiaccounthomenodes) - The unlocked nodes in the home instance of the account.
+- [`api().account().homestead().decorations()`](#apiaccounthomesteaddecorations) - The account's currently used decorations in homestead.
+- [`api().account().homestead().glyphs()`](#apiaccounthomesteadglyphs) - The account's glyphs stored in homestead.
 - [`api().account().inventory()`](#apiaccountinventory) - The shared inventory slots of the account.
+- [`api().account().jadebots()`](#apiaccountjadebots) - The unlocked jadebots of the account.
+- [`api().account().legendaryarmory()`](#apiaccountlegendaryarmory) - The items in the legendary armory of the account.
 - [`api().account().luck()`](#apiaccountluck) - The total luck of the account.
 - [`api().account().mailcarriers()`](#apiaccountmailcarriers) - The unlocked mailcarriers of the account.
 - [`api().account().mapchests()`](#apiaccountmapchests) - The completed daily mapchests of the account.
@@ -70,12 +75,17 @@ client.language('de').items().all()
 - [`api().account().pvp().heroes()`](#apiaccountpvpheroes) - The unlocked pvp heroes of the account.
 - [`api().account().raids()`](#apiaccountraids) - The completed raids of the current weekly.
 - [`api().account().recipes()`](#apiaccountrecipes) - The unlocked recipes of the account. 
+- [`api().account().skiffs()`](#apiaccountskiffs) - The unlocked skiffs of the account. 
 - [`api().account().skins()`](#apiaccountskins) - The unlocked skins of the account. 
 - [`api().account().titles()`](#apiaccounttitles) - The unlocked titles of the account. 
 - [`api().account().transactions()`](#apiaccounttransactions) - Alternative method of calling [`api().commerce().transactions()`](#apicommercetransactionscurrentbuys).
 - [`api().account().delivery()`](#apiaccountdelivery) - Alternative method of calling [`api().commerce().delivery()`](#apicommercedelivery).
 - [`api().account().wallet()`](#apiaccountwallet) - The currencies owned by the account. 
-- [`api().account().worldbosses()`](#apiaccountworldbosses) - The daily worldbosses completed by the account. 
+- [`api().account().wizardsvault().listings()`](#apiaccountwizardsvaultlistings) - The account's astral rewards in the Wizard's Vault.
+- [`api().account().wizardsvault().daily()`](#apiaccountwizardsvaultdaily) - The account's daily objectives in the Wizard's Vault.
+- [`api().account().wizardsvault().weekly()`](#apiaccountwizardsvaultweekly) - The account's weekly objectives in the Wizard's Vault.
+- [`api().account().wizardsvault().special()`](#apiaccountwizardsvaultspecial) - The account's seasonal objectives in the Wizard's Vault.
+- [`api().account().worldbosses()`](#apiaccountworldbosses) - The daily worldbosses completed by the account.
 - [`api().achievements()`](#apiachievements) - Information about achievements.
 - [`api().achievements().categories()`](#apiachievementscategories) - The categories for achievements.
 - [`api().achievements().groups()`](#apiachievementsgroups) - The top-level groups for achievements.
@@ -116,6 +126,7 @@ client.language('de').items().all()
 - [`api().emblem().foregrounds()`](#apiemblemforegrounds) - The guild emblem's foreground images.
 - [`api().events()`](#apievents) - Information about events.
 - [`api().files()`](#apifiles) - Commonly requested assets that may be used to enhance API-derived applications.
+- [`api().emotes()`](#apiemotes) - Information about emotes.
 - [`api().finishers()`](#apifinishers) - Information about finishers.
 - [`api().gliders()`](#apigliders) - Information about gliders.
 - [`api().guild()`](#apiguild) - Core details about a given guild.
@@ -132,9 +143,14 @@ client.language('de').items().all()
 - [`api().guild().treasury()`](#apiguildtreasury) - Information about the items in the guild's treasury.
 - [`api().home().cats()`](#apihomecats) - Information about home instance cats.
 - [`api().home().nodes()`](#apihomenodes) - Information about home instance nodes.
+- [`api().homestead().decorations()`](#apihomesteaddecorations) - Information about homestead decorations.
+- [`api().homestead().decorations().categories()`](#apihomesteaddecorationscategories) - Information about homestead decoration categories.
+- [`api().homestead().glyphs()`](#apihomesteadglyphs) - Information about glyphs in homestead.
 - [`api().items()`](#apiitems) - Information about items that were discovered by players.
 - [`api().itemstats()`](#apiitemstats) - Information about stats for items.
 - [`api().mailcarriers()`](#apimailcarriers) - Information about mailcarriers.
+- [`api().jadebots()`](#apijadebots) - Information about jadebots.
+- [`api().legendaryarmory()`](#legendaryarmory) - Information about the items in the legendary armory.
 - [`api().legends()`](#apilegends) - Information about the revenant's legends.
 - [`api().mapchests()`](#apimapchests) - Information about daily claimable map chests.
 - [`api().maps()`](#apimaps) - Details about maps, including details about floor and translation data on how to translate between world coordinates and map 
@@ -163,6 +179,7 @@ client.language('de').items().all()
 - [`api().raids()`](#apiraids) - Information about raids, including their bosses.
 - [`api().recipes()`](#apirecipes) - Information about discovered recipes.
 - [`api().recipes().search()`](#apirecipessearch) - Search for a recipe based on input or output items.
+- [`api().skiffs()`](#apiskiffs) - Information about skiffs.
 - [`api().skills()`](#apiskills) - Information about skills usable by players.
 - [`api().skins()`](#apiskins) - Information about available skins.
 - [`api().specializations()`](#apispecializations) - Information about currently released specializations.
@@ -171,6 +188,9 @@ client.language('de').items().all()
 - [`api().titles()`](#apititles) - Information about titles.
 - [`api().tokeninfo()`](#apitokeninfo) - Information about the supplied API key.
 - [`api().traits()`](#apitraits) - Information about specific traits, which are contained within specializations.
+- [`api().wizardsvault()`](#apiwizardsvault) - Information about the current season of the Wizard's Vault.
+- [`api().wizardsvault().listings()`](#apiwizardsvaultlistings) - Information about the astral rewards in the Wizard's Vault.
+- [`api().wizardsvault().objectives()`](#apiwizardsvaultobjectives) - Information about the objectives in the Wizard's Vault.
 - [`api().worlds()`](#apiworlds) - Information about the available worlds / servers.
 - [`api().worldbosses()`](#apiworldbosses) - Information about the available worldbosses.
 - [`api().wvw().abilities()`](#apiwvwabilities) - Information about the abilities available in WvW.
@@ -297,6 +317,21 @@ Alternative method of calling [`api().commerce().delivery()`](#apicommercedelive
 
 ---
 
+### `api().account().emotes()`
+
+> The unlocked emotes of the account.
+
+- **API-URL:** [/v2/account/emotes](https://api.guildwars2.com/v2/account/emotes)
+- **Paginated:** No
+- **Bulk expanding:** No
+- **Authenticated:** Yes
+- **Localized:** No
+- **Cache time:** 5 minutes
+
+<sup>[↑ Back to the overview](#available-endpoints)</sup>
+
+---
+
 ### `api().account().finishers()`
 
 > The unlocked finishers of the account.
@@ -357,11 +392,71 @@ Alternative method of calling [`api().commerce().delivery()`](#apicommercedelive
 
 ---
 
+### `api().account().homestead().decorations()`
+
+> The account's currently used decorations in homestead.
+
+- **API-URL:** [/v2/account/homestead/decorations](https://api.guildwars2.com/v2/account/homestead/decorations)
+- **Paginated:** Yes
+- **Bulk expanding:** Yes
+- **Authenticated:** Yes
+- **Localized:** Yes
+- **Cache time:** 5 minutes
+
+<sup>[↑ Back to the overview](#available-endpoints)</sup>
+
+---
+
+### `api().account().homestead().glyphs()`
+
+> The account's glyphs stored in homestead.
+
+- **API-URL:** [/v2/account/homestead/glyphs](https://api.guildwars2.com/v2/account/homestead/glyphs)
+- **Paginated:** No
+- **Bulk expanding:** No
+- **Authenticated:** Yes
+- **Localized:** No
+- **Cache time:** 5 minutes
+
+<sup>[↑ Back to the overview](#available-endpoints)</sup>
+
+---
+
 ### `api().account().inventory()`
 
 > The shared inventory slots of the account.
 
 - **API-URL:** [/v2/account/inventory](https://api.guildwars2.com/v2/account/inventory)
+- **Paginated:** No
+- **Bulk expanding:** No
+- **Authenticated:** Yes
+- **Localized:** No
+- **Cache time:** 5 minutes
+
+<sup>[↑ Back to the overview](#available-endpoints)</sup>
+
+---
+
+### `api().account().jadebots()`
+
+> The unlocked jadebots of the account.
+
+- **API-URL:** [/v2/account/jadebots](https://api.guildwars2.com/v2/account/jadebots)
+- **Paginated:** No
+- **Bulk expanding:** No
+- **Authenticated:** Yes
+- **Localized:** No
+- **Cache time:** 5 minutes
+
+<sup>[↑ Back to the overview](#available-endpoints)</sup>
+
+---
+
+### `api().account().legendaryarmory()`
+
+> The items in the legendary armory of the account.
+
+- **API-URL:** [/v2/account/legendaryarmory](https://api.guildwars2.com/v2/account/legendaryarmory)
 - **Paginated:** No
 - **Bulk expanding:** No
 - **Authenticated:** Yes
@@ -592,6 +687,21 @@ Alternative method of calling [`api().pvp()`](#apipvpamulets).
 
 ---
 
+### `api().account().skiffs()`
+
+> The unlocked skiffs of the account. 
+
+- **API-URL:** [/v2/account/skiffs](https://api.guildwars2.com/v2/account/skiffs)
+- **Paginated:** No
+- **Bulk expanding:** No
+- **Authenticated:** Yes
+- **Localized:** No
+- **Cache time:** 5 minutes
+
+<sup>[↑ Back to the overview](#available-endpoints)</sup>
+
+---
+
 ### `api().account().skins()`
 
 > The unlocked skins of the account. 
@@ -639,6 +749,66 @@ Alternative method of calling [`api().commerce().transactions()`](#apicommercetr
 - **Bulk expanding:** No
 - **Authenticated:** Yes
 - **Localized:** No
+- **Cache time:** 5 minutes
+
+<sup>[↑ Back to the overview](#available-endpoints)</sup>
+
+---
+
+### `api().account().wizardsvault().listings()`
+
+> The account's astral rewards in the Wizard's Vault.
+
+- **API-URL:** [/v2/account/wizardsvault/listings](https://api.guildwars2.com/v2/account/wizardsvault/listings)
+- **Paginated:** No
+- **Bulk expanding:** No
+- **Authenticated:** Yes
+- **Localized:** No
+- **Cache time:** 5 minutes
+
+<sup>[↑ Back to the overview](#available-endpoints)</sup>
+
+---
+
+### `api().account().wizardsvault().daily()`
+
+> The account's daily objectives in the Wizard's Vault.
+
+- **API-URL:** [/v2/account/wizardsvault/daily](https://api.guildwars2.com/v2/account/wizardsvault/daily)
+- **Paginated:** No
+- **Bulk expanding:** No
+- **Authenticated:** Yes
+- **Localized:** Yes
+- **Cache time:** 5 minutes
+
+<sup>[↑ Back to the overview](#available-endpoints)</sup>
+
+---
+
+### `api().account().wizardsvault().weekly()`
+
+> The account's weekly objectives in the Wizard's Vault.
+
+- **API-URL:** [/v2/account/wizardsvault/weekly](https://api.guildwars2.com/v2/account/wizardsvault/weekly)
+- **Paginated:** No
+- **Bulk expanding:** No
+- **Authenticated:** Yes
+- **Localized:** Yes
+- **Cache time:** 5 minutes
+
+<sup>[↑ Back to the overview](#available-endpoints)</sup>
+
+---
+
+### `api().account().wizardsvault().special()`
+
+> The account's seasonal objectives in the Wizard's Vault.
+
+- **API-URL:** [/v2/account/wizardsvault/special](https://api.guildwars2.com/v2/account/wizardsvault/special)
+- **Paginated:** No
+- **Bulk expanding:** No
+- **Authenticated:** Yes
+- **Localized:** Yes
 - **Cache time:** 5 minutes
 
 <sup>[↑ Back to the overview](#available-endpoints)</sup>
@@ -1152,7 +1322,7 @@ Alternative method of calling [`api().commerce().transactions()`](#apicommercetr
 - **Paginated:** Yes
 - **Bulk expanding:** Yes
 - **Authenticated:** No
-- **Localized:** No
+- **Localized:** Yes
 - **Cache time:** 24 hours
 
 <sup>[↑ Back to the overview](#available-endpoints)</sup>
@@ -1258,6 +1428,21 @@ Alternative method of calling [`api().commerce().transactions()`](#apicommercetr
 - **Bulk expanding:** Yes
 - **Authenticated:** No
 - **Localized:** No
+- **Cache time:** 24 hours
+
+<sup>[↑ Back to the overview](#available-endpoints)</sup>
+
+---
+
+### `api().emotes()`
+
+> Information about emotes.
+
+- **API-URL:** [/v2/emotes](https://api.guildwars2.com/v2/emotes)
+- **Paginated:** Yes
+- **Bulk expanding:** Yes
+- **Authenticated:** No
+- **Localized:** Yes
 - **Cache time:** 24 hours
 
 <sup>[↑ Back to the overview](#available-endpoints)</sup>
@@ -1506,6 +1691,51 @@ Alternative method of calling [`api().commerce().transactions()`](#apicommercetr
 
 ---
 
+### `api().homestead().decorations()`
+
+> Information about homestead decorations.
+
+- **API-URL:** [/v2/homestead/decorations](https://api.guildwars2.com/v2/homestead/decorations)
+- **Paginated:** Yes
+- **Bulk expanding:** No
+- **Authenticated:** No
+- **Localized:** Yes
+- **Cache time:** 24 hours
+
+<sup>[↑ Back to the overview](#available-endpoints)</sup>
+
+---
+
+### `api().homestead().decorations().categories()`
+
+> Information about homestead decoration categories.
+
+- **API-URL:** [/v2/homestead/decorations/categories](https://api.guildwars2.com/v2/homestead/decorations/categories)
+- **Paginated:** Yes
+- **Bulk expanding:** Yes
+- **Authenticated:** No
+- **Localized:** Yes
+- **Cache time:** 24 hours
+
+<sup>[↑ Back to the overview](#available-endpoints)</sup>
+
+---
+
+### `api().homestead().glyphs()`
+
+> Information about glyphs in homestead.
+
+- **API-URL:** [/v2/homestead/glyphs](https://api.guildwars2.com/v2/homestead/glyphs)
+- **Paginated:** Yes
+- **Bulk expanding:** Yes
+- **Authenticated:** No
+- **Localized:** No
+- **Cache time:** 24 hours
+
+<sup>[↑ Back to the overview](#available-endpoints)</sup>
+
+---
+
 ### `api().items()`
 
 > Information about items that were discovered by players.
@@ -1530,6 +1760,36 @@ Alternative method of calling [`api().commerce().transactions()`](#apicommercetr
 - **Bulk expanding:** Yes
 - **Authenticated:** No
 - **Localized:** Yes
+- **Cache time:** 24 hours
+
+<sup>[↑ Back to the overview](#available-endpoints)</sup>
+
+---
+
+### `api().jadebots()`
+
+> Information about jadebots.
+
+- **API-URL:** [/v2/jadebots](https://api.guildwars2.com/v2/jadebots)
+- **Paginated:** Yes
+- **Bulk expanding:** Yes
+- **Authenticated:** No
+- **Localized:** No
+- **Cache time:** 24 hours
+
+<sup>[↑ Back to the overview](#available-endpoints)</sup>
+
+---
+
+### `api().legendaryarmory()`
+
+> Information about the items in the legendary armory.
+
+- **API-URL:** [/v2/legendaryarmory](https://api.guildwars2.com/v2/legendaryarmory)
+- **Paginated:** Yes
+- **Bulk expanding:** Yes
+- **Authenticated:** No
+- **Localized:** No
 - **Cache time:** 24 hours
 
 <sup>[↑ Back to the overview](#available-endpoints)</sup>
@@ -1977,6 +2237,21 @@ Alternative method of calling [`api().commerce().transactions()`](#apicommercetr
 
 ---
 
+### `api().skiffs()`
+
+> Information about skiffs.
+
+- **API-URL:** [/v2/skiffs](https://api.guildwars2.com/v2/skiffs)
+- **Paginated:** Yes
+- **Bulk expanding:** Yes
+- **Authenticated:** No
+- **Localized:** Yes
+- **Cache time:** 24 hours
+
+<sup>[↑ Back to the overview](#available-endpoints)</sup>
+
+---
+
 ### `api().skills()`
 
 > Information about skills usable by players.
@@ -2092,6 +2367,51 @@ Alternative method of calling [`api().commerce().transactions()`](#apicommercetr
 - **Authenticated:** No
 - **Localized:** Yes
 - **Cache time:** 24 hours
+
+<sup>[↑ Back to the overview](#available-endpoints)</sup>
+
+---
+
+### `api().wizardsvault()`
+
+> Information about the current season of the Wizard's Vault.
+
+- **API-URL:** [/v2/wizardsvault](https://api.guildwars2.com/v2/wizardsvault)
+- **Paginated:** No
+- **Bulk expanding:** No
+- **Authenticated:** No
+- **Localized:** Yes
+- **Cache time:** 1 hour
+
+<sup>[↑ Back to the overview](#available-endpoints)</sup>
+
+---
+
+### `api().wizardsvault().listings()`
+
+> Information about the astral rewards in the Wizard's Vault.
+
+- **API-URL:** [/v2/wizardsvault/listings](https://api.guildwars2.com/v2/wizardsvault/listings)
+- **Paginated:** Yes
+- **Bulk expanding:** Yes
+- **Authenticated:** No
+- **Localized:** No
+- **Cache time:** 1 hour
+
+<sup>[↑ Back to the overview](#available-endpoints)</sup>
+
+---
+
+### `api().wizardsvault().objectives()`
+
+> Information about the objectives in the Wizard's Vault.
+
+- **API-URL:** [/v2/wizardsvault/objectives](https://api.guildwars2.com/v2/wizardsvault/objectives)
+- **Paginated:** Yes
+- **Bulk expanding:** Yes
+- **Authenticated:** No
+- **Localized:** Yes
+- **Cache time:** 1 hour
 
 <sup>[↑ Back to the overview](#available-endpoints)</sup>
 

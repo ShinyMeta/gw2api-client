@@ -1,5 +1,6 @@
 /* eslint-env jest */
 const { mockClient, fetchMock } = require('./mocks/client.mock')
+const errorCache = require('./mocks/errorCache.mock')
 const Module = require('../src/endpoint')
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -444,6 +445,34 @@ describe('abstract endpoint', () => {
       expect(bulkEntriesInCache).toEqual(content)
     })
 
+    it('caching with custom bulk id', async () => {
+      let content = [
+        { name: 1, profession: 'foo' },
+        { name: 2, profession: 'bar' },
+        { name: 3, profession: 'fooo' }
+      ]
+      endpoint.isBulk = true
+      endpoint.bulkId = 'name'
+      endpoint.url = '/v2/test'
+      endpoint.cacheTime = 60
+      fetchMock.addResponse(content)
+
+      let entry = await endpoint.many([1, 2, 3])
+      await wait(50)
+      let entryShouldCache = await endpoint.many([2, 3, 2])
+      let bulkEntriesInCache = await endpoint._cacheGetMany([
+        'hash[https://api.guildwars2.com/v2/test:schema]:1',
+        'hash[https://api.guildwars2.com/v2/test:schema]:2',
+        'hash[https://api.guildwars2.com/v2/test:schema]:3'
+      ])
+
+      expect(fetchMock.lastUrl()).toEqual('https://api.guildwars2.com/v2/test?v=schema&ids=1,2,3')
+      expect(fetchMock.urls().length).toEqual(1)
+      expect(entry).toEqual(content)
+      expect(entryShouldCache).toEqual(content.slice(1))
+      expect(bulkEntriesInCache).toEqual(content)
+    })
+
     it('partial caching', async () => {
       let content = [
         { id: 1, name: 'foo' },
@@ -452,6 +481,40 @@ describe('abstract endpoint', () => {
         { id: 4, name: 'xd' }
       ]
       endpoint.isBulk = true
+      endpoint.url = '/v2/test'
+      endpoint.cacheTime = 60
+      fetchMock.addResponse(content.slice(1, 3))
+      fetchMock.addResponse(content.slice(0, 1).concat(content.slice(3, 4)))
+
+      let entry = await endpoint.many([2, 3])
+      await wait(50)
+      let entryShouldCache = await endpoint.many([1, 2, 3, 4])
+      await wait(50)
+      let bulkEntriesInCache = await endpoint._cacheGetMany([
+        'hash[https://api.guildwars2.com/v2/test:schema]:1',
+        'hash[https://api.guildwars2.com/v2/test:schema]:2',
+        'hash[https://api.guildwars2.com/v2/test:schema]:3',
+        'hash[https://api.guildwars2.com/v2/test:schema]:4'
+      ])
+
+      expect(fetchMock.urls()).toEqual([
+        'https://api.guildwars2.com/v2/test?v=schema&ids=2,3',
+        'https://api.guildwars2.com/v2/test?v=schema&ids=1,4'
+      ])
+      expect(entry).toEqual(content.slice(1, 3))
+      expect(entryShouldCache).toEqual(content)
+      expect(bulkEntriesInCache).toEqual(content)
+    })
+
+    it('partial caching with custom bulk id', async () => {
+      let content = [
+        { name: 1, profession: 'foo' },
+        { name: 2, profession: 'bar' },
+        { name: 3, profession: 'fooo' },
+        { name: 4, profession: 'xd' }
+      ]
+      endpoint.isBulk = true
+      endpoint.bulkId = 'name'
       endpoint.url = '/v2/test'
       endpoint.cacheTime = 60
       fetchMock.addResponse(content.slice(1, 3))
@@ -623,6 +686,37 @@ describe('abstract endpoint', () => {
       ]
       endpoint.isPaginated = true
       endpoint.isBulk = true
+      endpoint.url = '/v2/test'
+      endpoint.cacheTime = 60
+      fetchMock.addResponse(content)
+
+      let entry = await endpoint.page(0, 3)
+      await wait(50)
+      let entryShouldCache = await endpoint.page(0, 3)
+      let entryInCache = await endpoint._cacheGetSingle('hash[https://api.guildwars2.com/v2/test:schema]:page-0/3')
+      let bulkEntriesInCache = await endpoint._cacheGetMany([
+        'hash[https://api.guildwars2.com/v2/test:schema]:1',
+        'hash[https://api.guildwars2.com/v2/test:schema]:2',
+        'hash[https://api.guildwars2.com/v2/test:schema]:3'
+      ])
+
+      expect(fetchMock.lastUrl()).toEqual('https://api.guildwars2.com/v2/test?v=schema&page=0&page_size=3')
+      expect(fetchMock.urls().length).toEqual(1)
+      expect(entry).toEqual(content)
+      expect(entryShouldCache).toEqual(content)
+      expect(entryInCache).toEqual(content)
+      expect(bulkEntriesInCache).toEqual(content)
+    })
+
+    it('caching for bulk endpoints with custom bulk id', async () => {
+      let content = [
+        { name: 1, profession: 'foo' },
+        { name: 2, profession: 'bar' },
+        { name: 3, profession: 'fooo' }
+      ]
+      endpoint.isPaginated = true
+      endpoint.isBulk = true
+      endpoint.bulkId = 'name'
       endpoint.url = '/v2/test'
       endpoint.cacheTime = 60
       fetchMock.addResponse(content)
@@ -846,6 +940,36 @@ describe('abstract endpoint', () => {
       expect(cacheEntries).toEqual(content)
     })
 
+    it('caching for bulk endpoints with custom bulk id', async () => {
+      let content = [
+        { name: 1, profession: 'foo' },
+        { name: 2, profession: 'bar' },
+        { name: 3, profession: 'fooo' }
+      ]
+      endpoint.isBulk = true
+      endpoint.bulkId = 'name'
+      endpoint.url = '/v2/test'
+      endpoint.cacheTime = 60
+      fetchMock.addResponse(content)
+
+      let entry = await endpoint.all()
+      await wait(50)
+      let entryShouldCache = await endpoint.all()
+      let entryInCache = await endpoint._cacheGetSingle('hash[https://api.guildwars2.com/v2/test:schema]:all')
+      let cacheEntries = await endpoint._cacheGetMany([
+        'hash[https://api.guildwars2.com/v2/test:schema]:1',
+        'hash[https://api.guildwars2.com/v2/test:schema]:2',
+        'hash[https://api.guildwars2.com/v2/test:schema]:3'
+      ])
+
+      expect(fetchMock.lastUrl()).toEqual('https://api.guildwars2.com/v2/test?v=schema&ids=all')
+      expect(fetchMock.urls().length).toEqual(1)
+      expect(entry).toEqual(content)
+      expect(entryShouldCache).toEqual(content)
+      expect(entryInCache).toEqual(content)
+      expect(cacheEntries).toEqual(content)
+    })
+
     it('cant mutate cache data', async () => {
       endpoint.isPaginated = true
       endpoint.url = '/v2/test'
@@ -985,12 +1109,48 @@ describe('abstract endpoint', () => {
       expect(await endpoint.caches[2].get('foo')).toEqual({ bar: 1337 })
     })
 
+    it('handles errors in single sets in all connected cache storages', async () => {
+      const warnMock = jest.fn()
+      global.console = { warn: warnMock }
+
+      endpoint.caches = [errorCache()]
+
+      let error
+      try {
+        endpoint._cacheSetSingle('foo', { bar: 1337 })
+        await wait(50)
+      } catch (err) {
+        error = err
+      }
+
+      expect(error).toBeUndefined()
+      expect(warnMock.mock.calls[0][0]).toEqual(`[gw2api-client] Errored during _cacheSetSingle`)
+    })
+
     it('many sets in all connected cache storages', async () => {
       endpoint._cacheSetMany([['foo', { bar: 1337 }], ['herp', { derp: 42 }]])
       await wait(50)
 
       expect(await endpoint.caches[1].mget(['foo', 'herp'])).toEqual([{ bar: 1337 }, { derp: 42 }])
       expect(await endpoint.caches[2].mget(['foo', 'herp'])).toEqual([{ bar: 1337 }, { derp: 42 }])
+    })
+
+    it('handles errors in many sets in all connected cache storages', async () => {
+      const warnMock = jest.fn()
+      global.console = { warn: warnMock }
+
+      endpoint.caches = [errorCache()]
+
+      let error
+      try {
+        endpoint._cacheSetMany([['foo', { bar: 1337 }], ['herp', { derp: 42 }]])
+        await wait(50)
+      } catch (err) {
+        error = err
+      }
+
+      expect(error).toBeUndefined()
+      expect(warnMock.mock.calls[0][0]).toEqual(`[gw2api-client] Errored during _cacheSetMany`)
     })
 
     it('single gets of the first possible connected cache storage', async () => {

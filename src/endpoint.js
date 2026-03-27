@@ -21,6 +21,7 @@ module.exports = class AbstractEndpoint {
     this.isPaginated = false
     this.maxPageSize = 200
     this.isBulk = false
+    this.bulkId = 'id'
     this.supportsBulkAll = true
     this.isLocalized = false
     this.isAuthenticated = false
@@ -267,7 +268,7 @@ module.exports = class AbstractEndpoint {
       this.debugMessage(`many(${this.url}) resolving partially from cache (${cached.length} ids)`)
       const missingIds = getMissingIds(ids, cached)
       return this._many(missingIds, cached.length > 0, skipAutoBatch).then(content => {
-        const cacheContent = content.map(value => [this._cacheHash(value.id), value])
+        const cacheContent = content.map(value => [this._cacheHash(value[this.bulkId]), value])
         this._cacheSetMany(cacheContent)
 
         // Merge the new content with the cached content and guarantee element order
@@ -280,7 +281,7 @@ module.exports = class AbstractEndpoint {
     const getMissingIds = (ids, cached) => {
       const cachedIds = {}
       cached.map(x => {
-        cachedIds[x.id] = 1
+        cachedIds[x[this.bulkId]] = 1
       })
 
       return ids.filter(x => cachedIds[x] !== 1)
@@ -359,7 +360,7 @@ module.exports = class AbstractEndpoint {
         let cacheContent = [[hash, content]]
 
         if (this.isBulk) {
-          cacheContent = cacheContent.concat(content.map(value => [this._cacheHash(value.id), value]))
+          cacheContent = cacheContent.concat(content.map(value => [this._cacheHash(value[this.bulkId]), value]))
         }
 
         this._cacheSetMany(cacheContent)
@@ -406,7 +407,7 @@ module.exports = class AbstractEndpoint {
         let cacheContent = [[hash, content]]
 
         if (this.isBulk) {
-          cacheContent = cacheContent.concat(content.map(value => [this._cacheHash(value.id), value]))
+          cacheContent = cacheContent.concat(content.map(value => [this._cacheHash(value[this.bulkId]), value]))
         }
 
         this._cacheSetMany(cacheContent)
@@ -460,13 +461,21 @@ module.exports = class AbstractEndpoint {
 
   // Set a single cache key in all connected cache storages
   _cacheSetSingle (key, value) {
-    this.caches.map(cache => cache.set(key, value, this.cacheTime))
+    this.caches.map(cache => {
+      cache.set(key, value, this.cacheTime).catch(error => {
+        console.warn('[gw2api-client] Errored during _cacheSetSingle', { error, cache, key, value })
+      })
+    })
   }
 
   // Set multiples cache key in all connected cache storages
   _cacheSetMany (values) {
     values = values.map(value => [value[0], value[1], this.cacheTime])
-    this.caches.map(cache => cache.mset(values))
+    this.caches.map(cache => {
+      cache.mset(values).catch(error => {
+        console.warn('[gw2api-client] Errored during _cacheSetMany', { error, cache, values })
+      })
+    })
   }
 
   // Get a cached value out of the first possible connected cache storages
@@ -584,7 +593,7 @@ module.exports = class AbstractEndpoint {
     })
 
     // Sort by the indexes
-    entries.sort((a, b) => indexMap[a.id] - indexMap[b.id])
+    entries.sort((a, b) => indexMap[a[this.bulkId]] - indexMap[b[this.bulkId]])
     return entries
   }
 

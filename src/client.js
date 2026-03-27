@@ -143,6 +143,10 @@ module.exports = class Client {
     return new endpoints.EmblemEndpoint(this)
   }
 
+  emotes () {
+    return new endpoints.EmotesEndpoint(this)
+  }
+
   events () {
     return new endpoints.EventsEndpoint(this)
   }
@@ -167,12 +171,24 @@ module.exports = class Client {
     return new endpoints.HomeEndpoint(this)
   }
 
+  homestead () {
+    return new endpoints.HomesteadEndpoint(this)
+  }
+
   items () {
     return new endpoints.ItemsEndpoint(this)
   }
 
   itemstats () {
     return new endpoints.ItemstatsEndpoint(this)
+  }
+
+  jadebots () {
+    return new endpoints.JadebotsEndpoint(this)
+  }
+
+  legendaryarmory () {
+    return new endpoints.LegendaryarmoryEndpoint(this)
   }
 
   legends () {
@@ -251,6 +267,10 @@ module.exports = class Client {
     return new endpoints.RecipesEndpoint(this)
   }
 
+  skiffs () {
+    return new endpoints.SkiffsEndpoint(this)
+  }
+
   skills () {
     return new endpoints.SkillsEndpoint(this)
   }
@@ -277,6 +297,10 @@ module.exports = class Client {
 
   traits () {
     return new endpoints.TraitsEndpoint(this)
+  }
+
+  wizardsvault () {
+    return new endpoints.WizardsvaultEndpoint(this)
   }
 
   worldbosses () {

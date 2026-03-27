@@ -214,6 +214,11 @@ describe('client', () => {
     expect(endpoint.backgrounds).not.toEqual(undefined)
   })
 
+  it('can get the emotes endpoint', () => {
+    let endpoint = client.emotes()
+    expect(endpoint.url).toEqual('/v2/emotes')
+  })
+
   it('can get the events endpoint', () => {
     let endpoint = client.events()
     expect(endpoint.url).toEqual('/v1/event_details.json')
@@ -250,6 +255,11 @@ describe('client', () => {
     expect(endpoint.cats).not.toEqual(undefined)
   })
 
+  it('can get the homestead endpoint', () => {
+    let endpoint = client.homestead()
+    expect(endpoint.decorations).not.toEqual(undefined)
+  })
+
   it('can get the items endpoint', () => {
     let endpoint = client.items()
     expect(endpoint.url).toEqual('/v2/items')
@@ -258,6 +268,16 @@ describe('client', () => {
   it('can get the itemstats endpoint', () => {
     let endpoint = client.itemstats()
     expect(endpoint.url).toEqual('/v2/itemstats')
+  })
+
+  it('can get the jadebots endpoint', () => {
+    let endpoint = client.jadebots()
+    expect(endpoint.url).toEqual('/v2/jadebots')
+  })
+
+  it('can get the legendaryarmory endpoint', () => {
+    let endpoint = client.legendaryarmory()
+    expect(endpoint.url).toEqual('/v2/legendaryarmory')
   })
 
   it('can get the legends endpoint', () => {
@@ -356,6 +376,11 @@ describe('client', () => {
     expect(endpoint.url).toEqual('/v2/recipes')
   })
 
+  it('can get the skiffs endpoint', () => {
+    let endpoint = client.skiffs()
+    expect(endpoint.url).toEqual('/v2/skiffs')
+  })
+
   it('can get the skills endpoint', () => {
     let endpoint = client.skills()
     expect(endpoint.url).toEqual('/v2/skills')
@@ -389,6 +414,12 @@ describe('client', () => {
   it('can get the traits endpoint', () => {
     let endpoint = client.traits()
     expect(endpoint.url).toEqual('/v2/traits')
+  })
+
+  it('can get the wizardsvault endpoint', () => {
+    let endpoint = client.wizardsvault()
+    expect(endpoint.listings().url).toEqual('/v2/wizardsvault/listings')
+    expect(endpoint.objectives().url).toEqual('/v2/wizardsvault/objectives')
   })
 
   it('can get the worldbosses endpoint', () => {

@@ -10,15 +10,20 @@ function blob (parent) {
     bank: wrap(() => client.account().bank().get()),
     characters: wrap(() => client.characters().all()),
     'commerce.buys': wrap(() => client.commerce().transactions().current().buys().all()),
-    'commerce.sells': wrap(() => client.commerce().transactions().current().sells().all()),
     'commerce.delivery': wrap(() => client.commerce().delivery().get()),
+    'commerce.sells': wrap(() => client.commerce().transactions().current().sells().all()),
     dungeons: wrap(() => client.account().dungeons().get()),
     dyes: wrap(() => client.account().dyes().get()),
-    gliders: wrap(() => client.account().gliders().get()),
+    emotes: wrap(() => client.account().emotes().get()),
     finishers: wrap(() => client.account().finishers().get()),
+    gliders: wrap(() => client.account().gliders().get()),
+    guilds: wrap(() => accountGuilds(client)),
     'home.cats': wrap(() => client.account().home().cats().get()),
     'home.nodes': wrap(() => client.account().home().nodes().get()),
-    guilds: wrap(() => accountGuilds(client)),
+    'homestead.decorations': wrap(() => client.account().homestead().decorations().get()),
+    'homestead.glyphs': wrap(() => client.account().homestead().glyphs().get()),
+    jadebots: wrap(() => client.account().jadebots().get()),
+    legendaryarmory: wrap(() => client.account().legendaryarmory().get()),
     luck: wrap(() => client.account().luck().get()),
     mailcarriers: wrap(() => client.account().mailcarriers().get()),
     masteries: wrap(() => client.account().masteries().get()),
@@ -36,6 +41,7 @@ function blob (parent) {
     raids: wrap(() => client.account().raids().get()),
     recipes: wrap(() => client.account().recipes().get()),
     shared: wrap(() => client.account().inventory().get()),
+    skiffs: wrap(() => client.account().skiffs().get()),
     skins: wrap(() => client.account().skins().get()),
     titles: wrap(() => client.account().titles().get()),
     wallet: wrap(() => client.account().wallet().get())
@@ -96,7 +102,11 @@ function wrap (func) {
         let status = _get(err, 'response.status')
         let text = _get(err, 'content.text')
 
-        if (status || text) {
+        if (
+          status ||
+          text ||
+          ['network', 'fetch'].some(x => err.message.toLowerCase().includes(x))
+        ) {
           console.warn(`API error: ${text} (${status})`)
           return resolve(null)
         }

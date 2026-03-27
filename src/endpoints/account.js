@@ -2,6 +2,7 @@ const AbstractEndpoint = require('../endpoint')
 const CharactersEndpoint = require('./characters')
 const PvpEndpoint = require('./pvp')
 const CommerceEndpoint = require('./commerce')
+const WizardsvaultEndpoint = require('./wizardsvault')
 const accountBlob = require('./account-blob.js')
 const resetTime = require('../helpers/resetTime')
 
@@ -41,6 +42,10 @@ class AccountEndpoint extends AbstractEndpoint {
     return new DyesEndpoint(this)
   }
 
+  emotes () {
+    return new EmotesEndpoint(this)
+  }
+
   finishers () {
     return new FinishersEndpoint(this)
   }
@@ -56,8 +61,23 @@ class AccountEndpoint extends AbstractEndpoint {
     }
   }
 
+  homestead () {
+    return {
+      decorations: () => new HomesteadDecorationsEndpoint(this),
+      glyphs: () => new HomesteadGlyphsEndpoint(this)
+    }
+  }
+
   inventory () {
     return new InventoryEndpoint(this)
+  }
+
+  jadebots () {
+    return new JadebotsEndpoint(this)
+  }
+
+  legendaryarmory () {
+    return new LegendaryarmoryEndpoint(this)
   }
 
   luck () {
@@ -117,6 +137,10 @@ class AccountEndpoint extends AbstractEndpoint {
     return new RecipesEndpoint(this)
   }
 
+  skiffs () {
+    return new SkiffsEndpoint(this)
+  }
+
   skins () {
     return new SkinsEndpoint(this)
   }
@@ -131,6 +155,15 @@ class AccountEndpoint extends AbstractEndpoint {
 
   wallet () {
     return new WalletEndpoint(this)
+  }
+
+  wizardsvault () {
+    return {
+      listings: () => new WizardsvaultListingsEndpoint(this),
+      daily: () => new WizardsvaultDailyEndpoint(this),
+      weekly: () => new WizardsvaultWeeklyEndpoint(this),
+      special: () => new WizardsvaultSpecialEndpoint(this)
+    }
   }
 
   worldbosses () {
@@ -216,6 +249,15 @@ class DyesEndpoint extends AbstractEndpoint {
   }
 }
 
+class EmotesEndpoint extends AbstractEndpoint {
+  constructor (client) {
+    super(client)
+    this.url = '/v2/account/emotes'
+    this.isAuthenticated = true
+    this.cacheTime = 5 * 60
+  }
+}
+
 class FinishersEndpoint extends AbstractEndpoint {
   constructor (client) {
     super(client)
@@ -252,10 +294,46 @@ class HomeNodesEndpoint extends AbstractEndpoint {
   }
 }
 
+class HomesteadDecorationsEndpoint extends AbstractEndpoint {
+  constructor (client) {
+    super(client)
+    this.url = '/v2/account/homestead/decorations'
+    this.isAuthenticated = true
+    this.cacheTime = 5 * 60
+  }
+}
+
+class HomesteadGlyphsEndpoint extends AbstractEndpoint {
+  constructor (client) {
+    super(client)
+    this.url = '/v2/account/homestead/glyphs'
+    this.isAuthenticated = true
+    this.cacheTime = 5 * 60
+  }
+}
+
 class InventoryEndpoint extends AbstractEndpoint {
   constructor (client) {
     super(client)
     this.url = '/v2/account/inventory'
+    this.isAuthenticated = true
+    this.cacheTime = 5 * 60
+  }
+}
+
+class JadebotsEndpoint extends AbstractEndpoint {
+  constructor (client) {
+    super(client)
+    this.url = '/v2/account/jadebots'
+    this.isAuthenticated = true
+    this.cacheTime = 5 * 60
+  }
+}
+
+class LegendaryarmoryEndpoint extends AbstractEndpoint {
+  constructor (client) {
+    super(client)
+    this.url = '/v2/account/legendaryarmory'
     this.isAuthenticated = true
     this.cacheTime = 5 * 60
   }
@@ -393,6 +471,15 @@ class RecipesEndpoint extends AbstractEndpoint {
   }
 }
 
+class SkiffsEndpoint extends AbstractEndpoint {
+  constructor (client) {
+    super(client)
+    this.url = '/v2/account/skiffs'
+    this.isAuthenticated = true
+    this.cacheTime = 5 * 60
+  }
+}
+
 class SkinsEndpoint extends AbstractEndpoint {
   constructor (client) {
     super(client)
@@ -433,16 +520,103 @@ class WorldbossesEndpoint extends AbstractEndpoint {
   }
 }
 
+class WizardsvaultListingsEndpoint extends AbstractEndpoint {
+  constructor (client) {
+    super(client)
+    this.url = '/v2/account/wizardsvault/listings'
+    this.isAuthenticated = true
+    this.cacheTime = 5 * 60
+  }
+}
+
+class WizardsvaultDailyEndpoint extends AbstractEndpoint {
+  constructor (client) {
+    super(client)
+    this.url = '/v2/account/wizardsvault/daily'
+    this.isAuthenticated = true
+    this.isLocalized = true
+    this.cacheTime = 5 * 60
+  }
+
+  async get () {
+    const [response, isStale] = await Promise.all([
+      super.get(),
+      isStaleDailyData(this)
+    ])
+
+    if (isStale) {
+      response.meta_progress_current = 0
+      response.meta_reward_claimed = false
+      response.objectives = []
+    }
+
+    return response
+  }
+}
+
+class WizardsvaultWeeklyEndpoint extends AbstractEndpoint {
+  constructor (client) {
+    super(client)
+    this.url = '/v2/account/wizardsvault/weekly'
+    this.isAuthenticated = true
+    this.isLocalized = true
+    this.cacheTime = 5 * 60
+  }
+
+  async get () {
+    const [response, isStale] = await Promise.all([
+      super.get(),
+      isStaleWeeklyData(this)
+    ])
+
+    if (isStale) {
+      response.meta_progress_current = 0
+      response.meta_reward_claimed = false
+      response.objectives = []
+    }
+
+    return response
+  }
+}
+
+class WizardsvaultSpecialEndpoint extends AbstractEndpoint {
+  constructor (client) {
+    super(client)
+    this.url = '/v2/account/wizardsvault/special'
+    this.isAuthenticated = true
+    this.isLocalized = true
+    this.cacheTime = 5 * 60
+  }
+
+  async get () {
+    const season = await new WizardsvaultEndpoint(this).get()
+
+    const [response, isStale] = await Promise.all([
+      super.get(),
+      isStaleData(this, new Date(season.start))
+    ])
+
+    if (isStale) {
+      response.objectives = []
+    }
+
+    return response
+  }
+}
+
 // Stale data can happen if the last account update was before the last daily reset
 async function isStaleDailyData (endpointInstance) {
-  const account = await new AccountEndpoint(endpointInstance).schema('2019-03-26').get()
-  return new Date(account.last_modified) < resetTime.getLastDailyReset()
+  return isStaleData(endpointInstance, resetTime.getLastDailyReset())
 }
 
 // Stale data can happen if the last account update was before the last weekly reset
 async function isStaleWeeklyData (endpointInstance) {
+  return isStaleData(endpointInstance, resetTime.getLastWeeklyReset())
+}
+
+async function isStaleData (endpointInstance, resetDate) {
   const account = await new AccountEndpoint(endpointInstance).schema('2019-03-26').get()
-  return new Date(account.last_modified) < resetTime.getLastWeeklyReset()
+  return new Date(account.last_modified) < resetDate
 }
 
 module.exports = AccountEndpoint

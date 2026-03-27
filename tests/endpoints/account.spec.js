@@ -201,6 +201,21 @@ describe('endpoints > account', () => {
     expect(content).toEqual([2, 3, 4])
   })
 
+  it('test /v2/account/emotes', async () => {
+    endpoint = endpoint.emotes()
+
+    expect(endpoint.isPaginated).toEqual(false)
+    expect(endpoint.isBulk).toEqual(false)
+    expect(endpoint.isLocalized).toEqual(false)
+    expect(endpoint.isAuthenticated).toEqual(true)
+    expect(endpoint.cacheTime).not.toEqual(undefined)
+    expect(endpoint.url).toEqual('/v2/account/emotes')
+
+    fetchMock.addResponse(['Stretch', 'geargrind'])
+    let content = await endpoint.get()
+    expect(content).toEqual(['Stretch', 'geargrind'])
+  })
+
   it('test /v2/account/finishers', async () => {
     endpoint = endpoint.finishers()
 
@@ -261,6 +276,51 @@ describe('endpoints > account', () => {
     expect(content).toEqual(['quartz_node', 'airship_cargo'])
   })
 
+  it('test /v2/account/homestead/decorations', async () => {
+    endpoint = endpoint.homestead().decorations()
+
+    expect(endpoint.isPaginated).toEqual(false)
+    expect(endpoint.isBulk).toEqual(false)
+    expect(endpoint.isLocalized).toEqual(false)
+    expect(endpoint.isAuthenticated).toEqual(true)
+    expect(endpoint.cacheTime).not.toEqual(undefined)
+    expect(endpoint.url).toEqual('/v2/account/homestead/decorations')
+
+    fetchMock.addResponse([{ id: 35, count: 50 }])
+    let content = await endpoint.get()
+    expect(content).toEqual([{ id: 35, count: 50 }])
+  })
+
+  it('test /v2/account/homestead/glyphs', async () => {
+    endpoint = endpoint.homestead().glyphs()
+
+    expect(endpoint.isPaginated).toEqual(false)
+    expect(endpoint.isBulk).toEqual(false)
+    expect(endpoint.isLocalized).toEqual(false)
+    expect(endpoint.isAuthenticated).toEqual(true)
+    expect(endpoint.cacheTime).not.toEqual(undefined)
+    expect(endpoint.url).toEqual('/v2/account/homestead/glyphs')
+
+    fetchMock.addResponse(['volatility_harvesting', 'volatility_logging'])
+    let content = await endpoint.get()
+    expect(content).toEqual(['volatility_harvesting', 'volatility_logging'])
+  })
+
+  it('test /v2/account/jadebots', async () => {
+    endpoint = endpoint.jadebots()
+
+    expect(endpoint.isPaginated).toEqual(false)
+    expect(endpoint.isBulk).toEqual(false)
+    expect(endpoint.isLocalized).toEqual(false)
+    expect(endpoint.isAuthenticated).toEqual(true)
+    expect(endpoint.cacheTime).not.toEqual(undefined)
+    expect(endpoint.url).toEqual('/v2/account/jadebots')
+
+    fetchMock.addResponse([2, 3, 4])
+    let content = await endpoint.get()
+    expect(content).toEqual([2, 3, 4])
+  })
+
   it('test /v2/account/inventory', async () => {
     endpoint = endpoint.inventory()
 
@@ -279,6 +339,25 @@ describe('endpoints > account', () => {
     expect(content).toEqual([
       { id: 49308, count: 1, binding: 'Account' },
       { id: 48931, count: 1, binding: 'Account' }
+    ])
+  })
+
+  it('test /v2/account/legendaryarmory', async () => {
+    endpoint = endpoint.legendaryarmory()
+
+    expect(endpoint.isPaginated).toEqual(false)
+    expect(endpoint.isBulk).toEqual(false)
+    expect(endpoint.isLocalized).toEqual(false)
+    expect(endpoint.isAuthenticated).toEqual(true)
+    expect(endpoint.cacheTime).not.toEqual(undefined)
+    expect(endpoint.url).toEqual('/v2/account/legendaryarmory')
+
+    fetchMock.addResponse([
+      { id: 30699, count: 1 }
+    ])
+    let content = await endpoint.get()
+    expect(content).toEqual([
+      { id: 30699, count: 1 }
     ])
   })
 
@@ -569,6 +648,21 @@ describe('endpoints > account', () => {
     expect(content).toEqual([2, 3, 4, 5])
   })
 
+  it('test /v2/account/skiffs', async () => {
+    endpoint = endpoint.skiffs()
+
+    expect(endpoint.isPaginated).toEqual(false)
+    expect(endpoint.isBulk).toEqual(false)
+    expect(endpoint.isLocalized).toEqual(false)
+    expect(endpoint.isAuthenticated).toEqual(true)
+    expect(endpoint.cacheTime).not.toEqual(undefined)
+    expect(endpoint.url).toEqual('/v2/account/skiffs')
+
+    fetchMock.addResponse([410, 413, 420])
+    let content = await endpoint.get()
+    expect(content).toEqual([410, 413, 420])
+  })
+
   it('test /v2/account/skins', async () => {
     endpoint = endpoint.skins()
 
@@ -617,6 +711,250 @@ describe('endpoints > account', () => {
     fetchMock.addResponse([{ id: 1, value: 48043252 }, { id: 2, value: 1956351 }])
     let content = await endpoint.get()
     expect(content[0].value).toEqual(48043252)
+  })
+
+  it('test /v2/account/wizardsvault/listings', async () => {
+    endpoint = endpoint.wizardsvault().listings()
+
+    expect(endpoint.isPaginated).toEqual(false)
+    expect(endpoint.isBulk).toEqual(false)
+    expect(endpoint.isLocalized).toEqual(false)
+    expect(endpoint.isAuthenticated).toEqual(true)
+    expect(endpoint.cacheTime).not.toEqual(undefined)
+    expect(endpoint.url).toEqual('/v2/account/wizardsvault/listings')
+
+    fetchMock.addResponse([{ id: 1, purchased: 1 }])
+    let content = await endpoint.get()
+    expect(content).toEqual([{ id: 1, purchased: 1 }])
+  })
+
+  it('test /v2/account/wizardsvault/daily (up to date)', async () => {
+    endpoint = endpoint.wizardsvault().daily()
+
+    expect(endpoint.isPaginated).toEqual(false)
+    expect(endpoint.isBulk).toEqual(false)
+    expect(endpoint.isLocalized).toEqual(true)
+    expect(endpoint.isAuthenticated).toEqual(true)
+    expect(endpoint.cacheTime).not.toEqual(undefined)
+    expect(endpoint.url).toEqual('/v2/account/wizardsvault/daily')
+
+    fetchMock.addResponse({
+      meta_progress_current: 4,
+      meta_progress_complete: 4,
+      meta_reward_item_id: 99961,
+      meta_reward_astral: 20,
+      meta_reward_claimed: true,
+      objectives: [
+        { id: 125, progress_current: 0, progress_complete: 3, claimed: false },
+        { id: 133, progress_current: 1, progress_complete: 1, claimed: true }
+      ]
+    })
+    fetchMock.addResponse({ name: 'AAA.1234', last_modified: '2019-04-02T07:03:00Z' })
+    let content = await endpoint.get()
+    expect(content).toEqual({
+      meta_progress_current: 4,
+      meta_progress_complete: 4,
+      meta_reward_item_id: 99961,
+      meta_reward_astral: 20,
+      meta_reward_claimed: true,
+      objectives: [
+        { id: 125, progress_current: 0, progress_complete: 3, claimed: false },
+        { id: 133, progress_current: 1, progress_complete: 1, claimed: true }
+      ]
+    })
+
+    expect(fetchMock.urls()).toEqual([
+      'https://api.guildwars2.com/v2/account/wizardsvault/daily?v=schema&access_token=false&lang=en',
+      'https://api.guildwars2.com/v2/account?v=2019-03-26&access_token=false'
+    ])
+  })
+
+  it('test /v2/account/wizardsvault/daily (stale)', async () => {
+    endpoint = endpoint.wizardsvault().daily()
+
+    expect(endpoint.isPaginated).toEqual(false)
+    expect(endpoint.isBulk).toEqual(false)
+    expect(endpoint.isLocalized).toEqual(true)
+    expect(endpoint.isAuthenticated).toEqual(true)
+    expect(endpoint.cacheTime).not.toEqual(undefined)
+    expect(endpoint.url).toEqual('/v2/account/wizardsvault/daily')
+
+    fetchMock.addResponse({
+      meta_progress_current: 4,
+      meta_progress_complete: 4,
+      meta_reward_item_id: 99961,
+      meta_reward_astral: 20,
+      meta_reward_claimed: true,
+      objectives: [
+        { id: 125, progress_current: 0, progress_complete: 3, claimed: false },
+        { id: 133, progress_current: 1, progress_complete: 1, claimed: true }
+      ]
+    })
+    fetchMock.addResponse({ name: 'AAA.1234', last_modified: '2019-04-01T23:53:00Z' })
+    let content = await endpoint.get()
+    expect(content).toEqual({
+      meta_progress_current: 0,
+      meta_progress_complete: 4,
+      meta_reward_item_id: 99961,
+      meta_reward_astral: 20,
+      meta_reward_claimed: false,
+      objectives: []
+    })
+
+    expect(fetchMock.urls()).toEqual([
+      'https://api.guildwars2.com/v2/account/wizardsvault/daily?v=schema&access_token=false&lang=en',
+      'https://api.guildwars2.com/v2/account?v=2019-03-26&access_token=false'
+    ])
+  })
+
+  it('test /v2/account/wizardsvault/weekly (up to date)', async () => {
+    endpoint = endpoint.wizardsvault().weekly()
+
+    expect(endpoint.isPaginated).toEqual(false)
+    expect(endpoint.isBulk).toEqual(false)
+    expect(endpoint.isLocalized).toEqual(true)
+    expect(endpoint.isAuthenticated).toEqual(true)
+    expect(endpoint.cacheTime).not.toEqual(undefined)
+    expect(endpoint.url).toEqual('/v2/account/wizardsvault/weekly')
+
+    fetchMock.addResponse({
+      meta_progress_current: 4,
+      meta_progress_complete: 4,
+      meta_reward_item_id: 99961,
+      meta_reward_astral: 20,
+      meta_reward_claimed: true,
+      objectives: [
+        { id: 125, progress_current: 0, progress_complete: 3, claimed: false },
+        { id: 133, progress_current: 1, progress_complete: 1, claimed: true }
+      ]
+    })
+    fetchMock.addResponse({ name: 'AAA.1234', last_modified: '2019-04-02T01:03:00Z' })
+    let content = await endpoint.get()
+    expect(content).toEqual({
+      meta_progress_current: 4,
+      meta_progress_complete: 4,
+      meta_reward_item_id: 99961,
+      meta_reward_astral: 20,
+      meta_reward_claimed: true,
+      objectives: [
+        { id: 125, progress_current: 0, progress_complete: 3, claimed: false },
+        { id: 133, progress_current: 1, progress_complete: 1, claimed: true }
+      ]
+    })
+
+    expect(fetchMock.urls()).toEqual([
+      'https://api.guildwars2.com/v2/account/wizardsvault/weekly?v=schema&access_token=false&lang=en',
+      'https://api.guildwars2.com/v2/account?v=2019-03-26&access_token=false'
+    ])
+  })
+
+  it('test /v2/account/wizardsvault/weekly (stale)', async () => {
+    endpoint = endpoint.wizardsvault().weekly()
+
+    expect(endpoint.isPaginated).toEqual(false)
+    expect(endpoint.isBulk).toEqual(false)
+    expect(endpoint.isLocalized).toEqual(true)
+    expect(endpoint.isAuthenticated).toEqual(true)
+    expect(endpoint.cacheTime).not.toEqual(undefined)
+    expect(endpoint.url).toEqual('/v2/account/wizardsvault/weekly')
+
+    fetchMock.addResponse({
+      meta_progress_current: 4,
+      meta_progress_complete: 4,
+      meta_reward_item_id: 99961,
+      meta_reward_astral: 20,
+      meta_reward_claimed: true,
+      objectives: [
+        { id: 125, progress_current: 0, progress_complete: 3, claimed: false },
+        { id: 133, progress_current: 1, progress_complete: 1, claimed: true }
+      ]
+    })
+    fetchMock.addResponse({ name: 'AAA.1234', last_modified: '2019-04-01T06:53:00Z' })
+    let content = await endpoint.get()
+    expect(content).toEqual({
+      meta_progress_current: 0,
+      meta_progress_complete: 4,
+      meta_reward_item_id: 99961,
+      meta_reward_astral: 20,
+      meta_reward_claimed: false,
+      objectives: []
+    })
+
+    expect(fetchMock.urls()).toEqual([
+      'https://api.guildwars2.com/v2/account/wizardsvault/weekly?v=schema&access_token=false&lang=en',
+      'https://api.guildwars2.com/v2/account?v=2019-03-26&access_token=false'
+    ])
+  })
+
+  it('test /v2/account/wizardsvault/special (up to date)', async () => {
+    endpoint = endpoint.wizardsvault().special()
+
+    expect(endpoint.isPaginated).toEqual(false)
+    expect(endpoint.isBulk).toEqual(false)
+    expect(endpoint.isLocalized).toEqual(true)
+    expect(endpoint.isAuthenticated).toEqual(true)
+    expect(endpoint.cacheTime).not.toEqual(undefined)
+    expect(endpoint.url).toEqual('/v2/account/wizardsvault/special')
+
+    fetchMock.addResponse({
+      title: 'The Realm of Dreams Season',
+      start: '2022-11-07T17:00:00Z',
+      end: '2024-05-14T16:00:00Z'
+    })
+    fetchMock.addResponse({
+      objectives: [
+        { id: 125, progress_current: 0, progress_complete: 3, claimed: false },
+        { id: 133, progress_current: 1, progress_complete: 1, claimed: true }
+      ]
+    })
+    fetchMock.addResponse({ name: 'AAA.1234', last_modified: '2023-04-02T01:03:00Z' })
+    let content = await endpoint.get()
+    expect(content).toEqual({
+      objectives: [
+        { id: 125, progress_current: 0, progress_complete: 3, claimed: false },
+        { id: 133, progress_current: 1, progress_complete: 1, claimed: true }
+      ]
+    })
+
+    expect(fetchMock.urls()).toEqual([
+      'https://api.guildwars2.com/v2/wizardsvault?v=schema&lang=en',
+      'https://api.guildwars2.com/v2/account/wizardsvault/special?v=schema&access_token=false&lang=en',
+      'https://api.guildwars2.com/v2/account?v=2019-03-26&access_token=false'
+    ])
+  })
+
+  it('test /v2/account/wizardsvault/special (stale)', async () => {
+    endpoint = endpoint.wizardsvault().special()
+
+    expect(endpoint.isPaginated).toEqual(false)
+    expect(endpoint.isBulk).toEqual(false)
+    expect(endpoint.isLocalized).toEqual(true)
+    expect(endpoint.isAuthenticated).toEqual(true)
+    expect(endpoint.cacheTime).not.toEqual(undefined)
+    expect(endpoint.url).toEqual('/v2/account/wizardsvault/special')
+
+    fetchMock.addResponse({
+      title: 'The Realm of Dreams Season',
+      start: '2022-11-07T17:00:00Z',
+      end: '2024-05-14T16:00:00Z'
+    })
+    fetchMock.addResponse({
+      objectives: [
+        { id: 125, progress_current: 0, progress_complete: 3, claimed: false },
+        { id: 133, progress_current: 1, progress_complete: 1, claimed: true }
+      ]
+    })
+    fetchMock.addResponse({ name: 'AAA.1234', last_modified: '2019-04-01T06:53:00Z' })
+    let content = await endpoint.get()
+    expect(content).toEqual({
+      objectives: []
+    })
+
+    expect(fetchMock.urls()).toEqual([
+      'https://api.guildwars2.com/v2/wizardsvault?v=schema&lang=en',
+      'https://api.guildwars2.com/v2/account/wizardsvault/special?v=schema&access_token=false&lang=en',
+      'https://api.guildwars2.com/v2/account?v=2019-03-26&access_token=false'
+    ])
   })
 
   it('test /v2/account/worldbosses (up to date)', async () => {

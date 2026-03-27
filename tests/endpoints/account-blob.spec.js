@@ -13,13 +13,20 @@ function mockClient (hasGuildPermission) {
       bank: () => ({ get: () => _s([{ id: 123, foo: 'bar' }]) }),
       dungeons: () => ({ get: () => _s(['detha']) }),
       dyes: () => ({ get: () => _s([1, 2, 3]) }),
+      emotes: () => ({ get: () => _s([1, 2, 3]) }),
       finishers: () => ({ get: () => _s([1, 2, 3]) }),
       gliders: () => ({ get: () => _s([1, 2, 3]) }),
       home: () => ({
         cats: () => ({ get: () => _s([{ id: 1, hint: 'chicken' }]) }),
         nodes: () => ({ get: () => _s(['quartz_node', 'airship_cargo']) })
       }),
+      homestead: () => ({
+        decorations: () => ({ get: () => _s([{ id: 35, count: 50 }]) }),
+        glyphs: () => ({ get: () => _s(['volatility_harvesting', 'volatility_logging']) })
+      }),
       inventory: () => ({ get: () => _s([{ id: 123, foo: 'bar' }]) }),
+      jadebots: () => ({ get: () => _s([1, 2, 3]) }),
+      legendaryarmory: () => ({ get: () => _s([{ id: 123, count: 1 }]) }),
       luck: () => ({ get: () => _s(123) }),
       mailcarriers: () => ({ get: () => _s([1, 2, 3]) }),
       masteries: () => ({ get: () => _s([{ id: 123, foo: 'bar' }]) }),
@@ -36,6 +43,7 @@ function mockClient (hasGuildPermission) {
       outfits: () => ({ get: () => _s([1, 2, 3]) }),
       raids: () => ({ get: () => _s(['keep_construct']) }),
       recipes: () => ({ get: () => _s([1, 2, 3]) }),
+      skiffs: () => ({ get: () => _s([1, 2, 3]) }),
       skins: () => ({ get: () => _s([1, 2, 3]) }),
       titles: () => ({ get: () => _e({ response: { status: 403 } }) }),
       wallet: () => ({ get: () => _s([{ id: 123, foo: 'bar' }]) }),
@@ -94,12 +102,19 @@ const expectedResponse = {
   },
   dungeons: ['detha'],
   dyes: [1, 2, 3],
+  emotes: [1, 2, 3],
   finishers: [1, 2, 3],
   gliders: [1, 2, 3],
   home: {
     cats: [{ id: 1, hint: 'chicken' }],
     nodes: ['quartz_node', 'airship_cargo']
   },
+  homestead: {
+    decorations: [{ id: 35, count: 50 }],
+    glyphs: ['volatility_harvesting', 'volatility_logging']
+  },
+  jadebots: [1, 2, 3],
+  legendaryarmory: [{ id: 123, count: 1 }],
   luck: 123,
   mailcarriers: [1, 2, 3],
   masteries: [{ id: 123, foo: 'bar' }],
@@ -123,6 +138,7 @@ const expectedResponse = {
   raids: ['keep_construct'],
   recipes: [1, 2, 3],
   shared: [{ id: 123, foo: 'bar' }],
+  skiffs: [1, 2, 3],
   skins: [1, 2, 3],
   titles: null,
   wallet: [{ id: 123, foo: 'bar' }],
@@ -161,6 +177,17 @@ describe('endpoints > account.blob()', () => {
       let error = new Error()
       error.response = { status: 503 }
       error.content = { text: 'API is disabled' }
+
+      return _e(error)
+    }
+
+    let response = await endpoint.wrap(mockEndpoint)()
+    expect(response).toEqual(null)
+  })
+
+  it('test wrap() handling api errors without cors', async () => {
+    function mockEndpoint () {
+      let error = new Error('Network request failed')
 
       return _e(error)
     }
